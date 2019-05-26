@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"../handler"
 	"../server"
 	"github.com/urfave/cli"
 )
@@ -24,6 +25,7 @@ var Start cli.Command = cli.Command{
 	},
 	Action: func(c *cli.Context) error {
 		s := server.Server{
+			Engine:  handler.GetEngine(),
 			Address: c.String("address"),
 			Port:    c.String("port"),
 		}

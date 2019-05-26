@@ -1,8 +1,12 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
+// Server used to handling a http server
 type Server struct {
+	Engine  *gin.Engine
 	Address string
 	Port    string
 }
@@ -12,7 +16,5 @@ func (self Server) Init() {
 }
 
 func (self Server) Start() {
-	r := gin.Default()
-	InitRouter(r)
-	r.Run(self.Address + ":" + self.Port)
+	self.Engine.Run(self.Address + ":" + self.Port)
 }
