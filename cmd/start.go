@@ -1,10 +1,31 @@
 package cmd
 
 import (
+	"log"
+	"net/http"
+	"os"
+
 	"../handler"
 	"../server"
 	"github.com/urfave/cli"
 )
+
+// https://github.com/uber-go/fx/blob/master/example_test.go
+
+// NewLogger create new logger
+func NewLogger() *log.Logger {
+	logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
+	logger.Print("Executing NewLogger.")
+	return logger
+}
+
+// NewHandler create new handler
+func NewHandler(logger *log.Logger) (http.Handler, error) {
+	logger.Print("Executing NewHandler.")
+	return http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		logger.Print("Got a request.")
+	}), nil
+}
 
 // Start is a definition of cli.Command used to start gin server
 var Start cli.Command = cli.Command{
@@ -25,7 +46,7 @@ var Start cli.Command = cli.Command{
 	},
 	Action: func(c *cli.Context) error {
 		s := server.Server{
-			Engine:  handler.GetEngine(),
+			Engine:  handler.BuildEngine(c),
 			Address: c.String("address"),
 			Port:    c.String("port"),
 		}

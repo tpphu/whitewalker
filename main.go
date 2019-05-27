@@ -12,6 +12,10 @@ import (
 func main() {
 	app := cli.NewApp()
 
+	app.Name = "whitewalker"
+	app.Usage = "A Gin Application"
+	app.Version = "0.0.1"
+
 	app.Commands = []cli.Command{
 		cmd.Start,
 		cmd.Migrate,
