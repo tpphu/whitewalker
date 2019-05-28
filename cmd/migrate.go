@@ -39,7 +39,7 @@ func migrateAction(appContext *cli.Context) {
 }
 
 // Migrate is a definition of cli.Command used to migrate schema to database
-var Migrate cli.Command = cli.Command{
+var Migrate = cli.Command{
 	Name:  "migrate",
 	Usage: "Migrate db",
 	Action: func(appContext *cli.Context) error {
