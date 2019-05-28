@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/jinzhu/gorm"
   "context"
   "log"
   "os"
@@ -13,16 +14,8 @@ import (
   "github.com/urfave/cli"
 )
 
-// https://github.com/uber-go/fx/blob/master/example_test.go
-
-// newLogger create new logger
-func newLogger() *log.Logger {
-  logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
-  return logger
-}
-
-// newLogger start server
-func newInvoker(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logger) {
+// handleHTTPServer handle http server
+func handleHTTPServer(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logger, db *gorm.DB) {
   s := server.Server{
     Engine:  handler.BuildEngine(),
     Address: appContext.String("address"),
@@ -48,8 +41,9 @@ func startAction(appContext *cli.Context) {
         return appContext
       },
       newLogger,
+      newDB,
     ),
-    fx.Invoke(newInvoker),
+    fx.Invoke(handleHTTPServer),
   )
 
   startCtx := context.Background()
@@ -57,6 +51,7 @@ func startAction(appContext *cli.Context) {
     log.Fatal(err)
   }
 
+  // @Todo: This is not working
   quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
   <-quit

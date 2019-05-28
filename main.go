@@ -16,6 +16,14 @@ func main() {
 	app.Usage = "A Gin Application"
 	app.Version = "0.0.1"
 
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:   "database, db",
+			Value:  "default:secret@/notes?charset=utf8&parseTime=True&loc=Local",
+			Usage:  "Database connection",
+		},
+	}
+
 	app.Commands = []cli.Command{
 		cmd.Start,
 		cmd.Migrate,

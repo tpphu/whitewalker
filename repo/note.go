@@ -27,14 +27,14 @@ func (noteRepo NoteRepoImpl) Create(note model.Note) (*model.Note, error) {
 }
 
 // Find a note
-func (noteRepo *NoteRepoImpl) Find(id int) (*model.Note, error) {
+func (noteRepo NoteRepoImpl) Find(id int) (*model.Note, error) {
 	note := &model.Note{}
 	err := noteRepo.DB.Where("id = ?", id).First(note).Error
 	return note, err
 }
 
 // List notes
-func (noteRepo *NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, error) {
+func (noteRepo NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, error) {
 	notes := []model.Note{}
 	offset := pagination.GetOffset()
 	limit := pagination.GetLimit()
@@ -46,13 +46,13 @@ func (noteRepo *NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, 
 }
 
 // Update a note
-func (noteRepo *NoteRepoImpl) Update(id int, note model.Note) error {
+func (noteRepo NoteRepoImpl) Update(id int, note model.Note) error {
 	err := noteRepo.DB.Where("id = ?", id).Update(&note).Error
 	return err
 }
 
 // Delete a note
-func (noteRepo *NoteRepoImpl) Delete(id int) error {
+func (noteRepo NoteRepoImpl) Delete(id int) error {
 	err := noteRepo.DB.Where("id = ?", id).Delete(&model.Note{}).Error
 	return err
 }

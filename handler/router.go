@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"../repo"
 	"github.com/gin-gonic/gin"
 )
+
 
 // BuildEngine recieves cli.Context and return a gin.Engine
 func BuildEngine() *gin.Engine {
@@ -15,9 +17,8 @@ func BuildEngine() *gin.Engine {
 func initNote(r *gin.Engine) {	
 	group := r.Group("/note")
 	group.GET("/:id", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		r := repo.NoteRepoImpl{}
+		noteGetHanlder(c, r)
 	})
 }
 
