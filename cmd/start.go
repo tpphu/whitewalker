@@ -17,26 +17,25 @@ import (
 // newLogger create new logger
 func newLogger() *log.Logger {
   logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
-  logger.Print("Executing newLogger.")
   return logger
 }
 
 // newLogger start server
-func newInvoker(c *cli.Context, logger *log.Logger) {
+func newInvoker(appContext *cli.Context, logger *log.Logger) {
   s := server.Server{
-    Engine:  handler.BuildEngine(c),
-    Address: c.String("address"),
-    Port:    c.String("port"),
+    Engine:  handler.BuildEngine(appContext),
+    Address: appContext.String("address"),
+    Port:    appContext.String("port"),
   }
   s.Start()
 }
 
 // startAction start command and init DI
-func startAction(c *cli.Context) {
+func startAction(appContext *cli.Context) {
   app := fx.New(		
     fx.Provide(
       func() *cli.Context{
-        return c
+        return appContext
       },
       newLogger,
     ),
@@ -76,8 +75,8 @@ var Start = cli.Command{
       EnvVar: "ADDRESS",
     },
   },
-  Action: func(c *cli.Context) error {
-    startAction(c)
+  Action: func(appContext *cli.Context) error {
+    startAction(appContext)
     return nil
   },
 }
