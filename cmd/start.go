@@ -4,6 +4,8 @@ import (
   "context"
   "log"
   "os"
+  "time"
+  "os/signal"
 
   "../handler"
   "../server"
@@ -55,11 +57,15 @@ func startAction(appContext *cli.Context) {
     log.Fatal(err)
   }
 
-  // stopCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-  // defer cancel()
-  // if err := app.Stop(stopCtx); err != nil {
-  //   log.Fatal(err)
-  // }
+  quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+  <-quit
+  
+  stopCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+  defer cancel()
+  if err := app.Stop(stopCtx); err != nil {
+    log.Fatal(err)
+  }
 }
 
 // Start is a definition of cli.Command used to start gin server
