@@ -1,12 +1,14 @@
 package cmd
 
 import (
-	"github.com/jinzhu/gorm"
 	"log"
 	"os"
-	"github.com/urfave/cli"
+
+	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/urfave/cli"
 )
+
 // https://github.com/uber-go/fx/blob/master/example_test.go
 
 // newLogger create new logger
@@ -20,5 +22,6 @@ func newDB(appContext *cli.Context) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+	db.LogMode(true)
 	return db
 }
