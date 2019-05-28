@@ -4,7 +4,6 @@ import (
   "context"
   "log"
   "os"
-  "time"
 
   "../handler"
   "../server"
@@ -21,13 +20,22 @@ func newLogger() *log.Logger {
 }
 
 // newLogger start server
-func newInvoker(appContext *cli.Context, logger *log.Logger) {
+func newInvoker(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logger) {
   s := server.Server{
     Engine:  handler.BuildEngine(),
     Address: appContext.String("address"),
     Port:    appContext.String("port"),
   }
-  s.Start()
+  lc.Append(fx.Hook{
+		OnStart: func(context.Context) error {
+      err := s.Start()
+			return err
+		},
+		OnStop: func(ctx context.Context) error {
+			err := s.Stop()
+			return err
+		},
+	})
 }
 
 // startAction start command and init DI
@@ -42,11 +50,7 @@ func startAction(appContext *cli.Context) {
     fx.Invoke(newInvoker),
   )
 
-  // In a typical application, we could just use app.Run() here. Since we
-  // don't want this example to run forever, we'll use the more-explicit Start
-  // and Stop.
-  startCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-  defer cancel()
+  startCtx := context.Background()
   if err := app.Start(startCtx); err != nil {
     log.Fatal(err)
   }

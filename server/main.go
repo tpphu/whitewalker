@@ -1,6 +1,10 @@
 package server
 
 import (
+	"context"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,10 +15,21 @@ type Server struct {
 	Port    string
 }
 
-func (self Server) Init() {
+var srv *http.Server
 
+// Start server
+func (s Server) Start() error {
+	addr := s.Address + ":" + s.Port
+	srv = &http.Server{
+		Addr:    addr,
+		Handler: s.Engine,
+	}
+	return srv.ListenAndServe()
 }
 
-func (self Server) Start() {
-	self.Engine.Run(self.Address + ":" + self.Port)
+// Stop server
+func (s Server) Stop() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	return srv.Shutdown(ctx)
 }
