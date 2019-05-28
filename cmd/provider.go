@@ -22,6 +22,6 @@ func newDB(appContext *cli.Context) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.LogMode(true)
+	db.LogMode(appContext.GlobalBool("dbdebug"))
 	return db
 }
