@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -21,10 +22,11 @@ func handleHTTPServer(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logg
 	}
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
-			err := s.Start()
-			return err
+			go s.Start()
+			return nil
 		},
 		OnStop: func(ctx context.Context) error {
+			fmt.Println("!Stop")
 			err := s.Stop()
 			return err
 		},

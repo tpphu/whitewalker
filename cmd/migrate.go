@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"../model"
 
 	"github.com/jinzhu/gorm"
@@ -8,8 +10,17 @@ import (
 	"go.uber.org/fx"
 )
 
-func handleMigrateDB(db *gorm.DB) {
-	db.AutoMigrate(&model.Note{})
+func handleMigrateDB(lc fx.Lifecycle, db *gorm.DB) {
+	lc.Append(fx.Hook{
+		OnStart: func(context.Context) error {
+			db.AutoMigrate(&model.Note{})
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			db.Close()
+			return nil
+		},
+	})
 }
 
 func migrateAction(appContext *cli.Context) {
