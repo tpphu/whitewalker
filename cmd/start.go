@@ -23,7 +23,7 @@ func newLogger() *log.Logger {
 // newLogger start server
 func newInvoker(appContext *cli.Context, logger *log.Logger) {
   s := server.Server{
-    Engine:  handler.BuildEngine(appContext),
+    Engine:  handler.BuildEngine(),
     Address: appContext.String("address"),
     Port:    appContext.String("port"),
   }

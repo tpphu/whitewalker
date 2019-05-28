@@ -1,7 +1,10 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-func NoteCreateHandler(c *gin.Context) {
 
+func NewNoteHandler(c *gin.Context) {
+	
 }
