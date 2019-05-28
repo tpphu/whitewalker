@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 
-	"../seed"
+	"github.com/tpphu/whitewalker/seed"
 
 	"github.com/jinzhu/gorm"
 	"github.com/urfave/cli"

@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"../helper"
-	"../model"
+	"github.com/tpphu/whitewalker/helper"
+	"github.com/tpphu/whitewalker/model"
 	"github.com/jinzhu/gorm"
 )
 

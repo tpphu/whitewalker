@@ -1,4 +1,5 @@
 {
     "go.useLanguageServer": false,
     "go.autocompleteUnimportedPackages": true,
+    "go.formatTool": "goimports",
 }

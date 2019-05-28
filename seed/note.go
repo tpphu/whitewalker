@@ -3,16 +3,16 @@ package seed
 import (
 	"time"
 
-	"../model"
-	"github.com/bxcodec/faker"
+	"github.com/icrowley/fake"
 	"github.com/jinzhu/gorm"
+	"github.com/tpphu/whitewalker/model"
 )
 
 func NoteSeed(db *gorm.DB) {
 	for i := 0; i < 20; i++ {
 		n := model.Note{}
 		n.ID = 0
-		n.Title = faker.Name()
+		n.Title = fake.FirstName()
 		n.CreatedAt = time.Now()
 		n.UpdatedAt = time.Now()
 		n.DeletedAt = nil

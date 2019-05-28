@@ -7,8 +7,8 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	"../handler"
-	"../server"
+	"github.com/tpphu/whitewalker/handler"
+	"github.com/tpphu/whitewalker/server"
 	"github.com/urfave/cli"
 	"go.uber.org/fx"
 )

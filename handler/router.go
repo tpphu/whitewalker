@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"../repo"
+	"github.com/tpphu/whitewalker/repo"
 	"github.com/gin-gonic/gin"
 )
 

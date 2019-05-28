@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"./cmd"
+	"github.com/tpphu/whitewalker/cmd"
 
 	"github.com/urfave/cli"
 )
@@ -18,9 +18,9 @@ func main() {
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "database, db",
-			Value:  "default:secret@/notes?charset=utf8&parseTime=True&loc=Local",
-			Usage:  "Database connection",
+			Name:  "database, db",
+			Value: "default:secret@/notes?charset=utf8&parseTime=True&loc=Local",
+			Usage: "Database connection",
 		},
 	}
 

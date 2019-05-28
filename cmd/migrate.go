@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 
-	"../model"
+	"github.com/tpphu/whitewalker/model"
 
 	"github.com/jinzhu/gorm"
 	"github.com/urfave/cli"
