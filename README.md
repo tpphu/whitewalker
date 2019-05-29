@@ -14,7 +14,7 @@ A Gin Boilerplate
 - [ ] Design middlewares
 - [ ] Caching/Redis
 
-## Next
+## Next2
 
 - [ ] Build an Router/Controller/Model/Mock gereration
 - [ ] Auto inject router/controller, with interface inject argument
