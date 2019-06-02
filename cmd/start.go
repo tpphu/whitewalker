@@ -13,7 +13,7 @@ import (
 	"go.uber.org/fx"
 )
 
-// handleHTTPServer handle http server
+// handleHTTPServer handles http server
 func handleHTTPServer(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logger, db *gorm.DB) {
 	s := server.Server{
 		Engine:  handler.BuildEngine(appContext, logger, db),
@@ -22,18 +22,20 @@ func handleHTTPServer(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logg
 	}
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
-			go s.Start()
+			fmt.Println("!Start")
+			// https://github.com/uber-go/fx/issues/627
+			go s.Start(appContext)
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
 			fmt.Println("!Stop")
-			err := s.Stop()
-			return err
+			s.Stop()
+			return nil
 		},
 	})
 }
 
-// startAction start command and init DI
+// startAction starts command and init DI
 func startAction(appContext *cli.Context) {
 	app := fx.New(
 		fx.Provide(
