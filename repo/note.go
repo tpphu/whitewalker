@@ -1,9 +1,9 @@
 package repo
 
 import (
+	"github.com/jinzhu/gorm"
 	"github.com/tpphu/whitewalker/helper"
 	"github.com/tpphu/whitewalker/model"
-	"github.com/jinzhu/gorm"
 )
 
 // NoteRepo interface
@@ -20,7 +20,7 @@ type NoteRepoImpl struct {
 	DB *gorm.DB
 }
 
-// Create a note
+// Create returns a note
 func (noteRepo NoteRepoImpl) Create(note model.Note) (*model.Note, error) {
 	err := noteRepo.DB.Create(&note).Error
 	return &note, err

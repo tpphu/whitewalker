@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"syscall"
 	"time"
@@ -24,7 +23,6 @@ var shutdownServer = func() error { return nil }
 // Start server
 func (s Server) Start(appContext *cli.Context) error {
 	endPoint := s.Address + ":" + s.Port
-	fmt.Println("endPoint:", endPoint)
 	readTimeout := time.Second * 60
 	writeTimeout := time.Second * 60
 	maxHeaderBytes := 1 << 10
