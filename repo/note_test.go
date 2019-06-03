@@ -35,8 +35,8 @@ func TestNoteRepoTestSuite(t *testing.T) {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
+	var noteID uint = 5
 	suite.Run("create with valid data", func() {
-		var noteID uint = 5
 		note := model.Note{
 			Title:     "Todo 123",
 			Completed: true,
@@ -69,8 +69,8 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
+	var noteID uint = 5
 	suite.Run("find with having found id", func() {
-		var noteID uint = 5
 		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
 			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
@@ -87,12 +87,61 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 		}
 	})
 	suite.Run("find with not found id", func() {
-		var noteID uint = 5
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
 			WillReturnError(errors.New("record not found"))
 		_, err := suite.noteRepo.Find(int(noteID))
 		if err == nil {
 			suite.Fail("Error should be not nil")
+		}
+	})
+}
+
+func (suite *NoteRepoTestSuite) TestNoteRepoUpdate() {
+	var noteID uint = 5
+	suite.Run("update with valid data", func() {
+		note := model.Note{
+			Title:     "Todo 123",
+			Completed: true,
+		}
+		suite.mock.ExpectExec("UPDATE `notes`").
+			WillReturnResult(sqlmock.NewResult(0, 1))
+		err := suite.noteRepo.Update(int(noteID), note)
+		if err != nil {
+			suite.Fail("error should be nil")
+		}
+	})
+	suite.Run("update with invalid data", func() {
+		note := model.Note{
+			Title:     fake.CharactersN(100),
+			Completed: true,
+		}
+		suite.mock.ExpectExec("UPDATE `notes`").
+			WillReturnError(errors.New("Title is exceed 255 character"))
+		err := suite.noteRepo.Update(int(noteID), note)
+		if err == nil {
+			suite.Fail("Error should not nil")
+		}
+	})
+}
+
+// TestNoteRepoDelete used to test delete a note
+// it shows that return error has not have meaning
+func (suite *NoteRepoTestSuite) TestNoteRepoDelete() {
+	var noteID uint = 5
+	suite.Run("delete with valid data", func() {
+		suite.mock.ExpectExec("UPDATE `notes` SET `deleted_at`=").
+			WillReturnResult(sqlmock.NewResult(0, 1))
+		err := suite.noteRepo.Delete(int(noteID))
+		if err != nil {
+			suite.Fail("error should be nil")
+		}
+	})
+	suite.Run("delete with invalid data", func() {
+		suite.mock.ExpectExec("UPDATE `notes` SET `deleted_at`=").
+			WillReturnResult(sqlmock.NewResult(0, 0))
+		err := suite.noteRepo.Delete(int(noteID))
+		if err != nil {
+			suite.Fail("error should be nil")
 		}
 	})
 }

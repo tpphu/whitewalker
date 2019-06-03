@@ -47,7 +47,7 @@ func (noteRepo NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, e
 
 // Update a note
 func (noteRepo NoteRepoImpl) Update(id int, note model.Note) error {
-	err := noteRepo.DB.Where("id = ?", id).Update(&note).Error
+	err := noteRepo.DB.Model(&note).Where("id = ?", id).Update(&note).Error
 	return err
 }
 
