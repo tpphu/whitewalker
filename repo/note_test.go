@@ -2,7 +2,6 @@ package repo
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
@@ -35,33 +34,35 @@ func TestNoteRepoTestSuite(t *testing.T) {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
-	var returnID uint = 5
-	note := model.Note{
-		Title:     "Todo 123",
-		Completed: true,
-	}
-	suite.mock.ExpectExec("INSERT INTO `notes`").WillReturnResult(sqlmock.NewResult(
-		int64(returnID),
-		1,
-	))
-	actual, err := suite.noteRepo.Create(note)
-	if err != nil {
-		suite.T().Fail()
-	}
-	if actual.ID != returnID {
-		suite.T().Fail()
-	}
-}
-
-func (suite *NoteRepoTestSuite) TestNoteRepoCreateWithError() {
-	note := model.Note{
-		Title:     fake.CharactersN(100),
-		Completed: true,
-	}
-	suite.mock.ExpectExec("INSERT INTO `notes`").WillReturnError(errors.New("Title is exceed 255 character"))
-	actual, err := suite.noteRepo.Create(note)
-	fmt.Println("actual:", actual)
-	if err == nil {
-		suite.T().Fail()
-	}
+	suite.Run("create with valid data", func() {
+		var returnID uint = 5
+		note := model.Note{
+			Title:     "Todo 123",
+			Completed: true,
+		}
+		suite.mock.ExpectExec("INSERT INTO `notes`").
+			WillReturnResult(sqlmock.NewResult(
+				int64(returnID),
+				1,
+			))
+		actual, err := suite.noteRepo.Create(note)
+		if err != nil {
+			suite.T().Fail()
+		}
+		if actual.ID != returnID {
+			suite.T().Fail()
+		}
+	})
+	suite.Run("create with invalid data", func() {
+		note := model.Note{
+			Title:     fake.CharactersN(100),
+			Completed: true,
+		}
+		suite.mock.ExpectExec("INSERT INTO `notes`").
+			WillReturnError(errors.New("Title is exceed 255 character"))
+		_, err := suite.noteRepo.Create(note)
+		if err == nil {
+			suite.T().Fail()
+		}
+	})
 }
