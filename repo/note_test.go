@@ -3,6 +3,7 @@ package repo
 import (
 	"errors"
 	"testing"
+	"time"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/icrowley/fake"
@@ -35,22 +36,22 @@ func TestNoteRepoTestSuite(t *testing.T) {
 
 func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 	suite.Run("create with valid data", func() {
-		var returnID uint = 5
+		var noteID uint = 5
 		note := model.Note{
 			Title:     "Todo 123",
 			Completed: true,
 		}
 		suite.mock.ExpectExec("INSERT INTO `notes`").
 			WillReturnResult(sqlmock.NewResult(
-				int64(returnID),
+				int64(noteID),
 				1,
 			))
 		actual, err := suite.noteRepo.Create(note)
 		if err != nil {
-			suite.T().Fail()
+			suite.Fail("error should be nil")
 		}
-		if actual.ID != returnID {
-			suite.T().Fail()
+		if actual.ID != noteID {
+			suite.Fail("Id should be same")
 		}
 	})
 	suite.Run("create with invalid data", func() {
@@ -62,7 +63,27 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 			WillReturnError(errors.New("Title is exceed 255 character"))
 		_, err := suite.noteRepo.Create(note)
 		if err == nil {
-			suite.T().Fail()
+			suite.Fail("Error should not nil")
+		}
+	})
+}
+
+func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
+	suite.Run("find with valid data", func() {
+		var noteID uint = 5
+		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
+			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
+		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
+			WillReturnRows(rows)
+		actual, err := suite.noteRepo.Find(int(noteID))
+		if err != nil {
+			suite.Fail("Error should be nil")
+		}
+		if actual.ID != noteID {
+			suite.Fail("Id should be same")
+		}
+		if actual.DeletedAt != nil {
+			suite.Fail("DeletedAt should be nil")
 		}
 	})
 }
