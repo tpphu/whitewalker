@@ -69,7 +69,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
-	suite.Run("find with valid data", func() {
+	suite.Run("find with having found id", func() {
 		var noteID uint = 5
 		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
 			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
@@ -84,6 +84,15 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 		}
 		if actual.DeletedAt != nil {
 			suite.Fail("DeletedAt should be nil")
+		}
+	})
+	suite.Run("find with not found id", func() {
+		var noteID uint = 5
+		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
+			WillReturnError(errors.New("record not found"))
+		_, err := suite.noteRepo.Find(int(noteID))
+		if err == nil {
+			suite.Fail("Error should be not nil")
 		}
 	})
 }
