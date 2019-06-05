@@ -41,6 +41,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 			Title:     "Todo 123",
 			Completed: true,
 		}
+		// Mock SQL / DB
 		suite.mock.ExpectExec("INSERT INTO `notes`").
 			WillReturnResult(sqlmock.NewResult(
 				int64(noteID),
@@ -59,8 +60,9 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 			Title:     fake.CharactersN(100),
 			Completed: true,
 		}
+		//
 		suite.mock.ExpectExec("INSERT INTO `notes`").
-			WillReturnError(errors.New("Title is exceed 255 character"))
+			WillReturnError(errors.New("Title is exceed 32 characters"))
 		_, err := suite.noteRepo.Create(note)
 		if err == nil {
 			suite.Fail("Error should not nil")
@@ -71,10 +73,14 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 	var noteID uint = 5
 	suite.Run("find with having found id", func() {
+		// Mock du lieu tra ve
 		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
 			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
+
+		// Trong truong ho query
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
 			WillReturnRows(rows)
+
 		actual, err := suite.noteRepo.Find(int(noteID))
 		if err != nil {
 			suite.Fail("Error should be nil")
@@ -86,7 +92,9 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 			suite.Fail("DeletedAt should be nil")
 		}
 	})
+
 	suite.Run("find with not found id", func() {
+		// Trong turong hop khong co cai id
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
 			WillReturnError(errors.New("record not found"))
 		_, err := suite.noteRepo.Find(int(noteID))
