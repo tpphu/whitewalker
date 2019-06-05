@@ -54,7 +54,7 @@ func startAction(appContext *cli.Context) {
 // Start is a definition of cli.Command used to start gin server
 var Start = cli.Command{
 	Name:  "start",
-	Usage: "Start http",
+	Usage: "Start aplication",
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:   "port, p",
