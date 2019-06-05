@@ -1,8 +1,8 @@
 language: go
 go: 
- - 1.12.3
+  - 1.12.3
 
 before_script:
-  cp .env.example .env
+  - cp .env.example .env
 script:
- - go test ./...
+  - go test ./...
