@@ -1,6 +1,8 @@
 # whitewaker
 A Gin Boilerplate
 
+Build status: ![Build status](https://travis-ci.com/tpphu/whitewaker.svg?branch=master)
+
 ## Todo
 
 - [x] Use Go Modules
@@ -18,4 +20,9 @@ A Gin Boilerplate
 
 - [ ] Build an Router/Controller/Model/Mock gereration
 - [ ] Auto inject router/controller, with interface inject argument
-- [ ] 
+
+## CI with Travis
+
+- https://arslan.io/2018/08/26/using-go-modules-with-vendor-support-on-travis-ci/
+- https://dave.cheney.net/2018/07/16/using-go-modules-with-travis-ci
+  
