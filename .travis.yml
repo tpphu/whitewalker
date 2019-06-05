@@ -5,4 +5,5 @@ go:
 before_script:
   - cp .env.example .env
 script:
-  - go test ./...
+  - env GO111MODULE=on go build
+  - env GO111MODULE=on go test ./...
