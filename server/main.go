@@ -2,10 +2,13 @@ package server
 
 import (
 	"context"
-	"net/http"
+	"log"
+	"syscall"
 	"time"
 
+	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
+	"github.com/urfave/cli"
 )
 
 // Server used to handling a http server
@@ -15,21 +18,33 @@ type Server struct {
 	Port    string
 }
 
-var srv *http.Server
+var shutdownServer = func() error { return nil }
 
 // Start server
-func (s Server) Start() error {
-	addr := s.Address + ":" + s.Port
-	srv = &http.Server{
-		Addr:    addr,
-		Handler: s.Engine,
+func (s Server) Start(appContext *cli.Context) error {
+	endPoint := s.Address + ":" + s.Port
+	readTimeout := time.Second * 60
+	writeTimeout := time.Second * 60
+	maxHeaderBytes := 1 << 10
+	endless.DefaultReadTimeOut = readTimeout
+	endless.DefaultWriteTimeOut = writeTimeout
+	endless.DefaultMaxHeaderBytes = maxHeaderBytes
+	server := endless.NewServer(
+		endPoint,
+		s.Engine)
+	server.BeforeBegin = func(add string) {
+		log.Printf("Actual pid is %d", syscall.Getpid())
 	}
-	return srv.ListenAndServe()
+	shutdownServer = func() error {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		return server.Shutdown(ctx)
+	}
+
+	return server.ListenAndServe()
 }
 
 // Stop server
 func (s Server) Stop() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	return srv.Shutdown(ctx)
+	return shutdownServer()
 }

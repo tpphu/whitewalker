@@ -25,3 +25,11 @@ func newDB(appContext *cli.Context) *gorm.DB {
 	db.LogMode(appContext.GlobalBool("dbdebug"))
 	return db
 }
+
+func newRabbitMQ() {
+
+}
+
+func newRedis() {
+
+}
