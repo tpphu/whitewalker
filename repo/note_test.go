@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tpphu/whitewalker/helper"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/icrowley/fake"
 	"github.com/jinzhu/gorm"
@@ -150,6 +152,47 @@ func (suite *NoteRepoTestSuite) TestNoteRepoDelete() {
 		err := suite.noteRepo.Delete(int(noteID))
 		if err != nil {
 			suite.Fail("error should be nil")
+		}
+	})
+}
+
+// TestNoteRepoList used to test list notes
+func (suite *NoteRepoTestSuite) TestNoteRepoList() {
+	var p = helper.Pagination{
+		Page:  1,
+		Limit: 2,
+	}
+	suite.Run("find with having found id", func() {
+		// Mock du lieu tra ve
+		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
+			AddRow(1, time.Now(), time.Now(), nil, "Todo 123", true).
+			AddRow(2, time.Now(), time.Now(), nil, "Todo 124", false)
+
+		// Trong truong ho query
+		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
+			WillReturnRows(rows)
+
+		actual, err := suite.noteRepo.List(p)
+		if err != nil {
+			suite.Fail("Error should be nil")
+		}
+		if len(actual) != 2 {
+			suite.Fail("Len of result should equal to 2")
+		}
+	})
+
+	suite.Run("find with not found id", func() {
+		// Trong turong hop khong co cai id
+		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"})
+		// Trong truong ho query
+		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
+			WillReturnRows(rows)
+		actual, err := suite.noteRepo.List(p)
+		if err != nil {
+			suite.Fail("Error should be nil")
+		}
+		if len(actual) != 0 {
+			suite.Fail("Len of result should equal to 0")
 		}
 	})
 }

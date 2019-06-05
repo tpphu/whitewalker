@@ -15,6 +15,11 @@ func TestPagination_GetPage(t *testing.T) {
 		want   uint
 	}{
 		{
+			"Get Page at 0",
+			fields{0, 10},
+			1,
+		},
+		{
 			"Get Page with valid data",
 			fields{10, 10},
 			10,
