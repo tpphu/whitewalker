@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -9,7 +10,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-// BuildEngine recieves cli.Context and return a gin.Engine
+// BuildEngine returns a *gin.Engine
 func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *gin.Engine {
 	gin.SetMode(appContext.GlobalString("ginmode"))
 	r := gin.Default()
@@ -19,12 +20,17 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *gin.
 }
 
 func initNote(r *gin.Engine, logger *log.Logger, db *gorm.DB) {
+	noteHanler := noteHandlerImpl{
+		noteRepo: repo.NoteRepoImpl{
+			DB: db,
+		},
+	}
 	group := r.Group("/note")
 	group.GET("/:id", func(c *gin.Context) {
-		r := repo.NoteRepoImpl{
-			DB: db,
-		}
-		noteGetHanlder(c, r)
+		idParam := c.Param("id")
+		id, _ := strconv.Atoi(idParam)
+		result, err := noteHanler.get(id)
+		simpleReturnHandler(c, result, err)
 	})
 }
 
@@ -34,4 +40,14 @@ func initDev(r *gin.Engine) {
 			"message": "pong",
 		})
 	})
+}
+
+func simpleReturnHandler(c *gin.Context, result interface{}, err error) {
+	if err != nil {
+		c.AbortWithStatusJSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, result)
 }

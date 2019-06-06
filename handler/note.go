@@ -1,21 +1,14 @@
 package handler
 
 import (
-	"strconv"
-
-	"github.com/gin-gonic/gin"
+	"github.com/tpphu/whitewalker/model"
 	"github.com/tpphu/whitewalker/repo"
 )
 
-func noteGetHanlder(c *gin.Context, repo repo.NoteRepo) {
-	idParam := c.Param("id")
-	id, _ := strconv.Atoi(idParam)
-	note, err := repo.Find(id)
-	if err != nil {
-		c.JSON(404, gin.H{
-			"message": "not found",
-		})
-		return
-	}
-	c.JSON(200, note)
+type noteHandlerImpl struct {
+	noteRepo repo.NoteRepo
+}
+
+func (n noteHandlerImpl) get(id int) (*model.Note, error) {
+	return n.noteRepo.Find(id)
 }
