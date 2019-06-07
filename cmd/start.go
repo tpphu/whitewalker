@@ -15,8 +15,9 @@ import (
 
 // handleHTTPServer handles http server
 func handleHTTPServer(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logger, db *gorm.DB) {
+	app := handler.BuildEngine(appContext, logger, db)
 	s := server.Server{
-		Engine:  handler.BuildEngine(appContext, logger, db),
+		Engine:  app,
 		Address: appContext.String("address"),
 		Port:    appContext.String("port"),
 	}
