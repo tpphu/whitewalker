@@ -8,10 +8,10 @@ import (
 
 // NoteRepo interface
 type NoteRepo interface {
-	Find(int) (*model.Note, error)
+	Find(uint) (*model.Note, error)
 	List(helper.Pagination) ([]model.Note, error)
-	Update(int, model.Note) error
-	Delete(int) error
+	Update(uint, model.Note) error
+	Delete(uint) error
 	Create(model.Note) (*model.Note, error)
 }
 
@@ -27,7 +27,7 @@ func (noteRepo NoteRepoImpl) Create(note model.Note) (*model.Note, error) {
 }
 
 // Find a note
-func (noteRepo NoteRepoImpl) Find(id int) (*model.Note, error) {
+func (noteRepo NoteRepoImpl) Find(id uint) (*model.Note, error) {
 	note := &model.Note{}
 	err := noteRepo.DB.Where("id = ?", id).First(note).Error
 	return note, err
@@ -46,13 +46,13 @@ func (noteRepo NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, e
 }
 
 // Update a note
-func (noteRepo NoteRepoImpl) Update(id int, note model.Note) error {
+func (noteRepo NoteRepoImpl) Update(id uint, note model.Note) error {
 	err := noteRepo.DB.Model(&note).Where("id = ?", id).Update(&note).Error
 	return err
 }
 
 // Delete a note
-func (noteRepo NoteRepoImpl) Delete(id int) error {
+func (noteRepo NoteRepoImpl) Delete(id uint) error {
 	err := noteRepo.DB.Where("id = ?", id).Delete(&model.Note{}).Error
 	return err
 }

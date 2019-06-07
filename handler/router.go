@@ -2,52 +2,51 @@ package handler
 
 import (
 	"log"
-	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/kataras/iris"
 	"github.com/tpphu/whitewalker/repo"
 	"github.com/urfave/cli"
 )
 
-// BuildEngine returns a *gin.Engine
-func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *gin.Engine {
-	gin.SetMode(appContext.GlobalString("ginmode"))
-	r := gin.Default()
+// BuildEngine returns a *iris.Application
+func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris.Application {
+	r := iris.Default()
+	r.Logger().SetLevel(appContext.GlobalString("loglevel"))
 	initDev(r)
 	initNote(r, logger, db)
 	return r
 }
 
-func initNote(r *gin.Engine, logger *log.Logger, db *gorm.DB) {
+func initNote(r *iris.Application, logger *log.Logger, db *gorm.DB) {
 	noteHanler := noteHandlerImpl{
 		noteRepo: repo.NoteRepoImpl{
 			DB: db,
 		},
 	}
-	group := r.Group("/note")
-	group.GET("/:id", func(c *gin.Context) {
-		idParam := c.Param("id")
-		id, _ := strconv.Atoi(idParam)
+	group := r.Party("/note")
+	group.Get("/{id:uint}", func(c iris.Context) {
+		id := c.Params().GetUintDefault("id", 0)
 		result, err := noteHanler.get(id)
 		simpleReturnHandler(c, result, err)
 	})
 }
 
-func initDev(r *gin.Engine) {
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+func initDev(r *iris.Application) {
+	r.Get("/ping", func(c iris.Context) {
+		c.JSON(iris.Map{
 			"message": "pong",
 		})
 	})
 }
 
-func simpleReturnHandler(c *gin.Context, result interface{}, err error) {
+func simpleReturnHandler(c iris.Context, result interface{}, err error) {
 	if err != nil {
-		c.AbortWithStatusJSON(400, gin.H{
+		c.StatusCode(400)
+		c.JSON(iris.Map{
 			"error": err.Error(),
 		})
 		return
 	}
-	c.JSON(200, result)
+	c.JSON(result)
 }

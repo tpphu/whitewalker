@@ -1,5 +1,5 @@
 # whitewaker
-A Gin Boilerplate
+A API service boilerplate
 
 Build status: ![Build status](https://travis-ci.com/tpphu/whitewaker.svg?branch=master)
 
@@ -11,7 +11,7 @@ Build status: ![Build status](https://travis-ci.com/tpphu/whitewaker.svg?branch=
 - [x] Migrate database
 - [x] Seed database
 - [x] Design IoC
-- [ ] Gin Validation/Universal Translation
+- [ ] Validation/Universal Translation
 - [ ] Design authentication
 - [ ] Design middlewares
 - [ ] Caching/Redis

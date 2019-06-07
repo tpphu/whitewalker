@@ -2,18 +2,18 @@ package server
 
 import (
 	"context"
-	"log"
+	"os"
+	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/fvbock/endless"
-	"github.com/gin-gonic/gin"
+	"github.com/kataras/iris"
 	"github.com/urfave/cli"
 )
 
 // Server used to handling a http server
 type Server struct {
-	Engine  *gin.Engine
+	Engine  *iris.Application
 	Address string
 	Port    string
 }
@@ -22,29 +22,35 @@ var shutdownServer = func() error { return nil }
 
 // Start server
 func (s Server) Start(appContext *cli.Context) error {
-	endPoint := s.Address + ":" + s.Port
-	readTimeout := time.Second * 60
-	writeTimeout := time.Second * 60
-	maxHeaderBytes := 1 << 10
-	endless.DefaultReadTimeOut = readTimeout
-	endless.DefaultWriteTimeOut = writeTimeout
-	endless.DefaultMaxHeaderBytes = maxHeaderBytes
-	server := endless.NewServer(
-		endPoint,
-		s.Engine)
-	server.BeforeBegin = func(add string) {
-		log.Printf("Actual pid is %d", syscall.Getpid())
-	}
-	shutdownServer = func() error {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		return server.Shutdown(ctx)
-	}
-
-	return server.ListenAndServe()
+	go func() {
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch,
+			// kill -SIGINT XXXX or Ctrl+c
+			os.Interrupt,
+			syscall.SIGINT, // register that too, it should be ok
+			// os.Kill  is equivalent with the syscall.Kill
+			os.Kill,
+			syscall.SIGKILL, // register that too, it should be ok
+			// kill -SIGTERM XXXX
+			syscall.SIGTERM,
+		)
+		select {
+		case <-ch:
+			timeout := 5 * time.Second
+			ctx, cancel := context.WithTimeout(context.Background(), timeout)
+			defer cancel()
+			s.Engine.Shutdown(ctx)
+		}
+	}()
+	s.Engine.Run(iris.Addr(s.Address+":"+s.Port), iris.WithoutInterruptHandler)
+	return nil
 }
 
 // Stop server
 func (s Server) Stop() error {
-	return shutdownServer()
+	timeout := 5 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	s.Engine.Shutdown(ctx)
+	return nil
 }

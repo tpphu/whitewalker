@@ -15,7 +15,7 @@ func (self *NoteRepoImpl) Create(note model.Note) (*model.Note, error) {
 	return args.Get(0).(*model.Note), args.Error(1)
 }
 
-func (self *NoteRepoImpl) Find(id int) (*model.Note, error) {
+func (self *NoteRepoImpl) Find(id uint) (*model.Note, error) {
 	args := self.Called(id)
 	return args.Get(0).(*model.Note), args.Error(1)
 }
@@ -25,12 +25,12 @@ func (self *NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, erro
 	return args.Get(0).([]model.Note), args.Error(1)
 }
 
-func (self *NoteRepoImpl) Update(id int, note model.Note) error {
+func (self *NoteRepoImpl) Update(id uint, note model.Note) error {
 	args := self.Called(id, note)
 	return args.Error(0)
 }
 
-func (self *NoteRepoImpl) Delete(id int) error {
+func (self *NoteRepoImpl) Delete(id uint) error {
 	args := self.Called(id)
 	return args.Error(0)
 }

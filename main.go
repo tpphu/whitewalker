@@ -18,7 +18,7 @@ func main() {
 	app := cli.NewApp()
 
 	app.Name = "whitewalker"
-	app.Usage = "A Gin Application"
+	app.Usage = "A API service application"
 	app.Version = "0.0.1"
 
 	app.Flags = []cli.Flag{
@@ -34,10 +34,10 @@ func main() {
 			EnvVar: "DB_DEBUG",
 		},
 		cli.StringFlag{
-			Name:   "ginmode",
-			Value:  "release",
+			Name:   "loglevel",
+			Value:  "debug",
 			Usage:  "Database debug",
-			EnvVar: "GIN_MODE",
+			EnvVar: "LOG_LEVEL",
 		},
 	}
 

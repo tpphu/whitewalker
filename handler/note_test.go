@@ -32,9 +32,9 @@ func TestNoteRepoTestSuite(t *testing.T) {
 
 func (suite *NoteHanlerTestSuite) TestNoteRepoCreate() {
 	suite.Run("create with valid data", func() {
-		id := 49
+		var id uint = 49
 		out := &model.Note{}
-		out.ID = uint(id)
+		out.ID = id
 		suite.noteRepo.On("Find", id).Return(out, nil)
 		note, _ := suite.noteHandler.get(id)
 		if note.ID != uint(id) {
@@ -42,7 +42,7 @@ func (suite *NoteHanlerTestSuite) TestNoteRepoCreate() {
 		}
 	})
 	suite.Run("create with invalid data", func() {
-		id := 49
+		var id uint = 49
 		suite.noteRepo.On("Find", id).Return(nil, errors.New("Not found"))
 		_, err := suite.noteHandler.get(id)
 		if err != nil {
