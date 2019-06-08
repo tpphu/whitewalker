@@ -13,7 +13,10 @@ import (
 func handleSeedDB(lc fx.Lifecycle, db *gorm.DB) {
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
-			seed.NoteSeed(db)
+			// seed.NoteSeed(db)
+			// seed.UserSeed(db)
+			// seed.DepartmentSeed(db)
+			seed.UserDeparmentSeed(db)
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {

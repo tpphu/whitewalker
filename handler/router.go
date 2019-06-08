@@ -15,6 +15,7 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 	r.Logger().SetLevel(appContext.GlobalString("loglevel"))
 	initDev(r)
 	initNote(r, logger, db)
+	initUser(r, logger, db)
 	return r
 }
 
@@ -28,6 +29,20 @@ func initNote(r *iris.Application, logger *log.Logger, db *gorm.DB) {
 	group.Get("/{id:uint}", func(c iris.Context) {
 		id := c.Params().GetUintDefault("id", 0)
 		result, err := noteHanler.get(id)
+		simpleReturnHandler(c, result, err)
+	})
+}
+
+func initUser(r *iris.Application, logger *log.Logger, db *gorm.DB) {
+	userHanler := userHandlerImpl{
+		userRepo: repo.UserRepoImpl{
+			DB: db,
+		},
+	}
+	group := r.Party("/user")
+	group.Get("/{id:uint}", func(c iris.Context) {
+		id := c.Params().GetUintDefault("id", 0)
+		result, err := userHanler.get(id)
 		simpleReturnHandler(c, result, err)
 	})
 }

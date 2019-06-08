@@ -13,7 +13,7 @@ import (
 func handleMigrateDB(lc fx.Lifecycle, db *gorm.DB) {
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
-			db.AutoMigrate(&model.Note{})
+			db.AutoMigrate(&model.Note{}, &model.User{}, &model.Department{})
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
