@@ -83,7 +83,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
 			WillReturnRows(rows)
 
-		actual, err := suite.noteRepo.Find(int(noteID))
+		actual, err := suite.noteRepo.Find(noteID)
 		if err != nil {
 			suite.Fail("Error should be nil")
 		}
@@ -99,7 +99,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 		// Trong turong hop khong co cai id
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
 			WillReturnError(errors.New("record not found"))
-		_, err := suite.noteRepo.Find(int(noteID))
+		_, err := suite.noteRepo.Find(noteID)
 		if err == nil {
 			suite.Fail("Error should be not nil")
 		}
@@ -115,7 +115,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoUpdate() {
 		}
 		suite.mock.ExpectExec("UPDATE `notes`").
 			WillReturnResult(sqlmock.NewResult(0, 1))
-		err := suite.noteRepo.Update(int(noteID), note)
+		err := suite.noteRepo.Update(noteID, note)
 		if err != nil {
 			suite.Fail("error should be nil")
 		}
@@ -127,7 +127,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoUpdate() {
 		}
 		suite.mock.ExpectExec("UPDATE `notes`").
 			WillReturnError(errors.New("Title is exceed 255 character"))
-		err := suite.noteRepo.Update(int(noteID), note)
+		err := suite.noteRepo.Update(noteID, note)
 		if err == nil {
 			suite.Fail("Error should not nil")
 		}
@@ -141,7 +141,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoDelete() {
 	suite.Run("delete with valid data", func() {
 		suite.mock.ExpectExec("UPDATE `notes` SET `deleted_at`=").
 			WillReturnResult(sqlmock.NewResult(0, 1))
-		err := suite.noteRepo.Delete(int(noteID))
+		err := suite.noteRepo.Delete(noteID)
 		if err != nil {
 			suite.Fail("error should be nil")
 		}
@@ -149,7 +149,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoDelete() {
 	suite.Run("delete with invalid data", func() {
 		suite.mock.ExpectExec("UPDATE `notes` SET `deleted_at`=").
 			WillReturnResult(sqlmock.NewResult(0, 0))
-		err := suite.noteRepo.Delete(int(noteID))
+		err := suite.noteRepo.Delete(noteID)
 		if err != nil {
 			suite.Fail("error should be nil")
 		}
