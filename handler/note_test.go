@@ -30,7 +30,7 @@ func TestNoteRepoTestSuite(t *testing.T) {
 	suite.Run(t, new(NoteHanlerTestSuite))
 }
 
-func (suite *NoteHanlerTestSuite) TestNoteRepoCreate() {
+func (suite *NoteHanlerTestSuite) TestNoteCreate() {
 	suite.Run("create with valid data", func() {
 		var id uint = 49
 		out := &model.Note{}

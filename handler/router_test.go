@@ -68,3 +68,26 @@ func (s *RouterTestSuite) TestNote() {
 		expect.Status(httptest.StatusNotFound)
 	})
 }
+
+func (s *RouterTestSuite) TestUser() {
+	s.Run("Test find a valid user", func() {
+		var userID uint = 50
+		// Mock du lieu tra ve
+		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "name"}).
+			AddRow(userID, time.Now(), time.Now(), nil, "Phu")
+
+		// Trong truong ho query
+		s.SQLMock.ExpectQuery("SELECT \\* FROM `users`").
+			WillReturnRows(rows)
+		expect := s.Expect.GET("/user/" + string(userID)).Expect()
+		expect.Status(httptest.StatusOK)
+		// expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", userID)
+	})
+	s.Run("Test find an valid user", func() {
+		var userID uint = 49
+		s.SQLMock.ExpectQuery("SELECT \\* FROM `users`").
+			WillReturnError(errors.New("not found"))
+		expect := s.Expect.GET("/user/" + string(userID)).Expect()
+		expect.Status(httptest.StatusNotFound)
+	})
+}

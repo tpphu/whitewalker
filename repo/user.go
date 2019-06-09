@@ -18,6 +18,6 @@ type UserRepoImpl struct {
 // Find a user
 func (userRepo UserRepoImpl) Find(id uint) (*model.User, error) {
 	user := &model.User{}
-	err := userRepo.DB.Preload("Departments").Find(&user, id).Error
+	err := userRepo.DB.Find(&user, id).Error
 	return user, err
 }
