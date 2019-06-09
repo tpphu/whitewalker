@@ -12,7 +12,7 @@ type userHandlerImpl struct {
 func (n userHandlerImpl) get(id uint) (*model.User, Error) {
 	user, err := n.userRepo.Find(id)
 	if err != nil {
-		return user, NotFoundErr
+		return user, NewNotFoundErr(err)
 	}
 	return user, nil
 }

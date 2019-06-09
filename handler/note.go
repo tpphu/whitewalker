@@ -12,7 +12,7 @@ type noteHandlerImpl struct {
 func (n noteHandlerImpl) get(id uint) (*model.Note, Error) {
 	note, err := n.noteRepo.Find(id)
 	if err != nil {
-		return note, NotFoundErr
+		return note, NewNotFoundErr(err)
 	}
 	return note, nil
 }

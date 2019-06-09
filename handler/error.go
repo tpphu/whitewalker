@@ -26,7 +26,9 @@ func (se StatusError) Status() int {
 	return se.Code
 }
 
-var NotFoundErr = StatusError{
-	Code: http.StatusNotFound,
-	Err:  errors.New("Not found"),
+func NewNotFoundErr(err error) Error {
+	return StatusError{
+		Code: http.StatusNotFound,
+		Err:  errors.New("Not found"),
+	}
 }
