@@ -9,6 +9,10 @@ type userHandlerImpl struct {
 	userRepo repo.UserRepo
 }
 
-func (n userHandlerImpl) get(id uint) (*model.User, error) {
-	return n.userRepo.Find(id)
+func (n userHandlerImpl) get(id uint) (*model.User, Error) {
+	user, err := n.userRepo.Find(id)
+	if err != nil {
+		return user, NotFoundErr
+	}
+	return user, nil
 }

@@ -55,9 +55,9 @@ func initDev(r *iris.Application) {
 	})
 }
 
-func simpleReturnHandler(c iris.Context, result interface{}, err error) {
+func simpleReturnHandler(c iris.Context, result interface{}, err Error) {
 	if err != nil {
-		c.StatusCode(400)
+		c.StatusCode(err.Status())
 		c.JSON(iris.Map{
 			"error": err.Error(),
 		})

@@ -9,6 +9,10 @@ type noteHandlerImpl struct {
 	noteRepo repo.NoteRepo
 }
 
-func (n noteHandlerImpl) get(id uint) (*model.Note, error) {
-	return n.noteRepo.Find(id)
+func (n noteHandlerImpl) get(id uint) (*model.Note, Error) {
+	note, err := n.noteRepo.Find(id)
+	if err != nil {
+		return note, NotFoundErr
+	}
+	return note, nil
 }

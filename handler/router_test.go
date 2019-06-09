@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/iris-contrib/httpexpect"
@@ -15,29 +17,54 @@ import (
 
 type RouterTestSuite struct {
 	suite.Suite
-	Expect *httpexpect.Expect
+	SQLMock sqlmock.Sqlmock
+	Expect  *httpexpect.Expect
 }
 
 func TestRouterTestSuite(t *testing.T) {
 	suite.Run(t, new(RouterTestSuite))
 }
 
-func (suite *RouterTestSuite) SetupTest() {
+func (s *RouterTestSuite) SetupTest() {
 	logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
 
-	db, _, _ := sqlmock.New()
+	db, mock, _ := sqlmock.New()
+	s.SQLMock = mock
 	DB, _ := gorm.Open("mysql", db)
 
 	app := iris.Default()
 	initDev(app)
 	initNote(app, logger, DB)
 
-	suite.Expect = httptest.New(suite.T(), app)
+	s.Expect = httptest.New(s.T(), app)
 }
 
-func (suite *RouterTestSuite) TearDownTest() {
+func (s *RouterTestSuite) TearDownTest() {
 }
 
-func (suite *RouterTestSuite) TestPing() {
-	suite.Expect.GET("/ping").Expect().Status(httptest.StatusOK)
+func (s *RouterTestSuite) TestPing() {
+	s.Expect.GET("/ping").Expect().Status(httptest.StatusOK)
+}
+
+func (s *RouterTestSuite) TestNote() {
+	s.Run("Test find a note", func() {
+		var noteID uint = 49
+		// Mock du lieu tra ve
+		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
+			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
+
+		// Trong truong ho query
+		s.SQLMock.ExpectQuery("SELECT \\* FROM `notes`").
+			WillReturnRows(rows)
+		expect := s.Expect.GET("/note/" + string(noteID)).Expect()
+		expect.Status(httptest.StatusOK)
+		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", 49)
+	})
+	s.Run("Test find a note", func() {
+		var noteID uint = 49
+		s.SQLMock.ExpectQuery("SELECT \\* FROM `notes`").
+			WillReturnError(errors.New("not found"))
+		expect := s.Expect.GET("/note/" + string(noteID)).Expect()
+		expect.Status(httptest.StatusNotFound)
+	})
 }
