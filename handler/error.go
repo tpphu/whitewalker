@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 )
 
@@ -29,6 +28,6 @@ func (se StatusError) Status() int {
 func NewNotFoundErr(err error) Error {
 	return StatusError{
 		Code: http.StatusNotFound,
-		Err:  errors.New("Not found"),
+		Err:  err,
 	}
 }
