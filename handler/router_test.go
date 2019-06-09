@@ -35,6 +35,7 @@ func (s *RouterTestSuite) SetupTest() {
 	app := iris.Default()
 	initDev(app)
 	initNote(app, logger, DB)
+	initUser(app, logger, DB)
 
 	s.Expect = httptest.New(s.T(), app)
 }
@@ -58,7 +59,7 @@ func (s *RouterTestSuite) TestNote() {
 			WillReturnRows(rows)
 		expect := s.Expect.GET("/note/" + string(noteID)).Expect()
 		expect.Status(httptest.StatusOK)
-		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", 49)
+		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", noteID)
 	})
 	s.Run("Test find a note", func() {
 		var noteID uint = 49
@@ -81,7 +82,7 @@ func (s *RouterTestSuite) TestUser() {
 			WillReturnRows(rows)
 		expect := s.Expect.GET("/user/" + string(userID)).Expect()
 		expect.Status(httptest.StatusOK)
-		// expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", userID)
+		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", userID)
 	})
 	s.Run("Test find an valid user", func() {
 		var userID uint = 49

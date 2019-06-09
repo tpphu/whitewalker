@@ -35,6 +35,7 @@ func (suite *UserHanlerTestSuite) TestUserFind() {
 		var id uint = 49
 		out := &model.User{}
 		out.ID = id
+		out.Name = "Phu"
 		suite.userRepo.On("Find", id).Return(out, nil)
 		user, _ := suite.userHandler.get(id)
 		if user.ID != id {
