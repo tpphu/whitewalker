@@ -4,11 +4,10 @@ import (
 	"time"
 
 	"github.com/icrowley/fake"
-	"github.com/jinzhu/gorm"
 	"github.com/tpphu/whitewalker/model"
 )
 
-func NoteSeed(db *gorm.DB) {
+func (s Seeder) NoteSeed() {
 	for i := 0; i < 20; i++ {
 		n := model.Note{}
 		n.ID = 0
@@ -16,6 +15,6 @@ func NoteSeed(db *gorm.DB) {
 		n.CreatedAt = time.Now()
 		n.UpdatedAt = time.Now()
 		n.DeletedAt = nil
-		db.Create(&n)
+		s.DB.Create(&n)
 	}
 }

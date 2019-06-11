@@ -1,50 +1,56 @@
 package cmd
 
 import (
-	"context"
+	"fmt"
+	"reflect"
+	"strings"
 
 	"github.com/tpphu/whitewalker/seed"
-
-	"github.com/jinzhu/gorm"
 	"github.com/urfave/cli"
-	"go.uber.org/fx"
 )
 
-func handleSeedDB(lc fx.Lifecycle, db *gorm.DB) {
-	lc.Append(fx.Hook{
-		OnStart: func(context.Context) error {
-			// seed.NoteSeed(db)
-			// seed.UserSeed(db)
-			// seed.DepartmentSeed(db)
-			seed.UserDeparmentSeed(db)
-			return nil
-		},
-		OnStop: func(ctx context.Context) error {
-			db.Close()
-			return nil
-		},
-	})
-}
-
 func seedAction(appContext *cli.Context) {
-	app := fx.New(
-		fx.Provide(
-			func() *cli.Context {
-				return appContext
-			},
-			newLogger,
-			newDB,
-		),
-		fx.Invoke(handleSeedDB),
-	)
-
-	app.Run()
+	db := newDB(appContext)
+	defer db.Close()
+	input := appContext.String("list")
+	if input == "" {
+		typeOfSeeder := reflect.TypeOf(seed.Seeder{})
+		lenOfMethods := typeOfSeeder.NumMethod()
+		fmt.Println("[1] You should pass argument --list=* or -l*")
+		fmt.Println("[2] Or you can pass one or more (use \",\" to separate) functions listed below:")
+		for i := 0; i < lenOfMethods; i++ {
+			fmt.Println("- " + typeOfSeeder.Method(i).Name)
+		}
+		return
+	}
+	seeder := seed.Seeder{
+		DB: db,
+	}
+	s := reflect.ValueOf(seeder)
+	arguments := []reflect.Value{}
+	if input == "*" {
+		lenOfMethods := s.NumMethod()
+		for i := 0; i < lenOfMethods; i++ {
+			s.Method(i).Call(arguments)
+		}
+		return
+	}
+	list := strings.Split(input, ",")
+	for _, n := range list {
+		s.MethodByName(n).Call(arguments)
+	}
 }
 
 // Seed is a definition of cli.Command used to migrate schema to database
 var Seed = cli.Command{
 	Name:  "seed",
 	Usage: "Seed db",
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "list, l",
+			Usage: "List the name of seed func should be run",
+		},
+	},
 	Action: func(appContext *cli.Context) error {
 		seedAction(appContext)
 		return nil
