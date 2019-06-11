@@ -16,7 +16,7 @@ func seedAction(appContext *cli.Context) {
 	if input == "" {
 		typeOfSeeder := reflect.TypeOf(seed.Seeder{})
 		lenOfMethods := typeOfSeeder.NumMethod()
-		fmt.Println("[1] You should pass argument --list=* or -l*")
+		fmt.Println("[1] You should pass argument --list * or -l *")
 		fmt.Println("[2] Or you can pass one or more (use \",\" to separate) functions listed below:")
 		for i := 0; i < lenOfMethods; i++ {
 			fmt.Println("- " + typeOfSeeder.Method(i).Name)
