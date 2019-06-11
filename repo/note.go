@@ -29,7 +29,7 @@ func (noteRepo NoteRepoImpl) Create(note model.Note) (*model.Note, error) {
 // Find a note
 func (noteRepo NoteRepoImpl) Find(id uint) (*model.Note, error) {
 	note := &model.Note{}
-	err := noteRepo.DB.Where("id = ?", id).First(note).Error
+	err := noteRepo.DB.Find(note, id).Error
 	return note, err
 }
 

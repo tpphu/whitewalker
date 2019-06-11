@@ -45,6 +45,7 @@ func main() {
 		cmd.Start,
 		cmd.Migrate,
 		cmd.Seed,
+		cmd.Test,
 	}
 
 	err = app.Run(os.Args)
