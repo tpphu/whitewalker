@@ -1,4 +1,4 @@
-# whitewaker
+# whitewalker
 A API service boilerplate
 
 Build status: ![Build status](https://travis-ci.com/tpphu/whitewaker.svg?branch=master)
