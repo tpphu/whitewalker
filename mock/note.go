@@ -12,17 +12,29 @@ type NoteRepoImpl struct {
 
 func (self *NoteRepoImpl) Create(note model.Note) (*model.Note, error) {
 	args := self.Called(note)
-	return args.Get(0).(*model.Note), args.Error(1)
+	out := args.Get(0)
+	if out == nil {
+		return nil, args.Error(1)
+	}
+	return out.(*model.Note), args.Error(1)
 }
 
 func (self *NoteRepoImpl) Find(id uint) (*model.Note, error) {
 	args := self.Called(id)
-	return args.Get(0).(*model.Note), args.Error(1)
+	out := args.Get(0)
+	if out == nil {
+		return nil, args.Error(1)
+	}
+	return out.(*model.Note), args.Error(1)
 }
 
 func (self *NoteRepoImpl) List(pagination helper.Pagination) ([]model.Note, error) {
 	args := self.Called(pagination)
-	return args.Get(0).([]model.Note), args.Error(1)
+	out := args.Get(0)
+	if out == nil {
+		return nil, args.Error(1)
+	}
+	return out.([]model.Note), args.Error(1)
 }
 
 func (self *NoteRepoImpl) Update(id uint, note model.Note) error {
