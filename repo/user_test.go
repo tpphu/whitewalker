@@ -33,8 +33,8 @@ func TestUserRepoTestSuite(t *testing.T) {
 }
 
 func (suite *UserRepoTestSuite) TestUserRepoFind() {
-	var userID uint = 5
 	suite.Run("find with having found id", func() {
+		var userID uint = 5
 		// Mock du lieu tra ve
 		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "name"}).
 			AddRow(userID, time.Now(), time.Now(), nil, "Phu")
@@ -56,6 +56,7 @@ func (suite *UserRepoTestSuite) TestUserRepoFind() {
 	})
 
 	suite.Run("find with not found id", func() {
+		var userID uint = 6
 		// Trong turong hop khong co cai id
 		suite.mock.ExpectQuery("SELECT \\* FROM `users`").
 			WillReturnError(errors.New("record not found"))

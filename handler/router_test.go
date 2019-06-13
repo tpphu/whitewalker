@@ -2,23 +2,24 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"testing"
-	"time"
 
-	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/iris-contrib/httpexpect"
-	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/httptest"
 	"github.com/stretchr/testify/suite"
+	"github.com/tpphu/whitewalker/mock"
+	"github.com/tpphu/whitewalker/model"
 )
 
 type RouterTestSuite struct {
 	suite.Suite
-	SQLMock sqlmock.Sqlmock
-	Expect  *httpexpect.Expect
+	noteRepo *mock.NoteRepoImpl
+	userRepo *mock.UserRepoImpl
+	Expect   *httpexpect.Expect
 }
 
 func TestRouterTestSuite(t *testing.T) {
@@ -28,14 +29,20 @@ func TestRouterTestSuite(t *testing.T) {
 func (s *RouterTestSuite) SetupTest() {
 	logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
 
-	db, mock, _ := sqlmock.New()
-	s.SQLMock = mock
-	DB, _ := gorm.Open("mysql", db)
-
 	app := iris.Default()
 	initDev(app)
-	initNote(app, logger, DB)
-	initUser(app, logger, DB)
+	s.noteRepo = new(mock.NoteRepoImpl)
+	noteHanler := &noteHandlerImpl{
+		noteRepo: s.noteRepo,
+		log:      logger,
+	}
+	initNote(app, noteHanler)
+	s.userRepo = new(mock.UserRepoImpl)
+	userHanler := &userHandlerImpl{
+		userRepo: s.userRepo,
+		log:      logger,
+	}
+	initUser(app, userHanler)
 
 	s.Expect = httptest.New(s.T(), app)
 }
@@ -48,47 +55,43 @@ func (s *RouterTestSuite) TestPing() {
 }
 
 func (s *RouterTestSuite) TestNote() {
-	s.Run("Test find a note", func() {
+	s.Run("Test find a note has found", func() {
 		var noteID uint = 49
-		// Mock du lieu tra ve
-		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
-			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
-
-		// Trong truong ho query
-		s.SQLMock.ExpectQuery("SELECT \\* FROM `notes`").
-			WillReturnRows(rows)
-		expect := s.Expect.GET("/note/" + string(noteID)).Expect()
+		out := &model.Note{}
+		out.ID = noteID
+		s.noteRepo.On("Find", noteID).Return(out, nil)
+		url := fmt.Sprintf("/note/%d", noteID)
+		expect := s.Expect.GET(url).Expect()
 		expect.Status(httptest.StatusOK)
 		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", noteID)
 	})
-	s.Run("Test find a note", func() {
-		var noteID uint = 49
-		s.SQLMock.ExpectQuery("SELECT \\* FROM `notes`").
-			WillReturnError(errors.New("not found"))
-		expect := s.Expect.GET("/note/" + string(noteID)).Expect()
+	s.Run("Test find a note not found", func() {
+		var noteID uint = 50
+		out := &model.Note{}
+		s.noteRepo.On("Find", noteID).Return(out, errors.New("Not found"))
+		url := fmt.Sprintf("/note/%d", noteID)
+		expect := s.Expect.GET(url).Expect()
 		expect.Status(httptest.StatusNotFound)
 	})
 }
 
 func (s *RouterTestSuite) TestUser() {
-	s.Run("Test find a valid user", func() {
-		var userID uint = 50
-		// Mock du lieu tra ve
-		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "name"}).
-			AddRow(userID, time.Now(), time.Now(), nil, "Phu")
-
-		// Trong truong ho query
-		s.SQLMock.ExpectQuery("SELECT \\* FROM `users`").
-			WillReturnRows(rows)
-		expect := s.Expect.GET("/user/" + string(userID)).Expect()
+	s.Run("Test find a user has found", func() {
+		var userID uint = 49
+		out := &model.User{}
+		out.ID = userID
+		s.userRepo.On("Find", userID).Return(out, nil)
+		url := fmt.Sprintf("/user/%d", userID)
+		expect := s.Expect.GET(url).Expect()
 		expect.Status(httptest.StatusOK)
 		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", userID)
 	})
-	s.Run("Test find an valid user", func() {
-		var userID uint = 49
-		s.SQLMock.ExpectQuery("SELECT \\* FROM `users`").
-			WillReturnError(errors.New("not found"))
-		expect := s.Expect.GET("/user/" + string(userID)).Expect()
+	s.Run("Test find a user not found", func() {
+		var userID uint = 50
+		out := &model.User{}
+		url := fmt.Sprintf("/user/%d", userID)
+		s.userRepo.On("Find", userID).Return(out, errors.New("Not found"))
+		expect := s.Expect.GET(url).Expect()
 		expect.Status(httptest.StatusNotFound)
 	})
 }

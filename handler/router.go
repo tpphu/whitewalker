@@ -14,17 +14,26 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 	r := iris.Default()
 	r.Logger().SetLevel(appContext.GlobalString("loglevel"))
 	initDev(r)
-	initNote(r, logger, db)
-	initUser(r, logger, db)
-	return r
-}
-
-func initNote(r *iris.Application, logger *log.Logger, db *gorm.DB) {
-	noteHanler := noteHandlerImpl{
+	// Note handler
+	noteHanler := &noteHandlerImpl{
 		noteRepo: repo.NoteRepoImpl{
 			DB: db,
 		},
+		log: logger,
 	}
+	initNote(r, noteHanler)
+	// User handler
+	userHanler := &userHandlerImpl{
+		userRepo: repo.UserRepoImpl{
+			DB: db,
+		},
+		log: logger,
+	}
+	initUser(r, userHanler)
+	return r
+}
+
+func initNote(r *iris.Application, noteHanler *noteHandlerImpl) {
 	group := r.Party("/note")
 	group.Get("/{id:uint}", func(c iris.Context) {
 		id := c.Params().GetUintDefault("id", 0)
@@ -33,12 +42,7 @@ func initNote(r *iris.Application, logger *log.Logger, db *gorm.DB) {
 	})
 }
 
-func initUser(r *iris.Application, logger *log.Logger, db *gorm.DB) {
-	userHanler := userHandlerImpl{
-		userRepo: repo.UserRepoImpl{
-			DB: db,
-		},
-	}
+func initUser(r *iris.Application, userHanler *userHandlerImpl) {
 	group := r.Party("/user")
 	group.Get("/{id:uint}", func(c iris.Context) {
 		id := c.Params().GetUintDefault("id", 0)

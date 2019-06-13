@@ -37,8 +37,8 @@ func TestNoteRepoTestSuite(t *testing.T) {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
-	var noteID uint = 5
 	suite.Run("create with valid data", func() {
+		var noteID uint = 5
 		note := model.Note{
 			Title:     "Todo 123",
 			Completed: true,
@@ -73,8 +73,8 @@ func (suite *NoteRepoTestSuite) TestNoteRepoCreate() {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
-	var noteID uint = 5
 	suite.Run("find with having found id", func() {
+		var noteID uint = 5
 		// Mock du lieu tra ve
 		rows := sqlmock.NewRows([]string{"id", "created_at", "updated_at", "deleted_at", "title", "completed"}).
 			AddRow(noteID, time.Now(), time.Now(), nil, "Todo 123", true)
@@ -96,6 +96,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 	})
 
 	suite.Run("find with not found id", func() {
+		var noteID uint = 6
 		// Trong turong hop khong co cai id
 		suite.mock.ExpectQuery("SELECT \\* FROM `notes`").
 			WillReturnError(errors.New("record not found"))
@@ -107,8 +108,8 @@ func (suite *NoteRepoTestSuite) TestNoteRepoFind() {
 }
 
 func (suite *NoteRepoTestSuite) TestNoteRepoUpdate() {
-	var noteID uint = 5
 	suite.Run("update with valid data", func() {
+		var noteID uint = 5
 		note := model.Note{
 			Title:     "Todo 123",
 			Completed: true,
@@ -121,6 +122,7 @@ func (suite *NoteRepoTestSuite) TestNoteRepoUpdate() {
 		}
 	})
 	suite.Run("update with invalid data", func() {
+		var noteID uint = 6
 		note := model.Note{
 			Title:     fake.CharactersN(100),
 			Completed: true,
