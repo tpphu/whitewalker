@@ -11,6 +11,9 @@ require (
 	github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398 // indirect
 	github.com/Shopify/sarama v1.22.1 // indirect
 	github.com/ajg/form v1.5.1 // indirect
+	github.com/antonmedv/expr v1.1.4
+	github.com/apaxa-go/eval v0.0.0-20171223182326-1d18b251d679
+	github.com/apaxa-go/helper v0.0.0-20180607175117-61d31b1c31c3 // indirect
 	github.com/aymerick/raymond v2.0.2+incompatible // indirect
 	github.com/corpix/uarand v0.1.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20190515213511-eb9f6a1743f3 // indirect
@@ -47,6 +50,7 @@ require (
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pty v1.1.4 // indirect
 	github.com/lib/pq v1.1.1 // indirect
+	github.com/mdempsky/gocode v0.0.0-20190203001940-7fb65232883f // indirect
 	github.com/micro/cli v0.2.0 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/moul/http2curl v1.0.0 // indirect
