@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	"github.com/tpphu/whitewalker/model"
+	"github.com/kataras/iris"
 	"github.com/tpphu/whitewalker/repo"
 )
 
@@ -12,10 +12,12 @@ type noteHandlerImpl struct {
 	log      *log.Logger
 }
 
-func (n noteHandlerImpl) get(id uint) (*model.Note, Error) {
+func (n noteHandlerImpl) get(c iris.Context) {
+	id := c.Params().GetUintDefault("id", 0)
 	note, err := n.noteRepo.Find(id)
 	if err != nil {
-		return note, NewNotFoundErr(err)
+		simpleReturnHandler(c, note, NewNotFoundErr(err))
+		return
 	}
-	return note, nil
+	simpleReturnHandler(c, note, nil)
 }

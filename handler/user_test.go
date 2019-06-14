@@ -2,52 +2,63 @@ package handler
 
 import (
 	"errors"
+	"fmt"
+	"log"
+	"os"
 	"testing"
 
+	"github.com/iris-contrib/httpexpect"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/httptest"
 	"github.com/stretchr/testify/suite"
 	"github.com/tpphu/whitewalker/mock"
 	"github.com/tpphu/whitewalker/model"
 )
 
-type UserHanlerTestSuite struct {
+type UserHandlerTestSuite struct {
 	suite.Suite
-	userRepo    *mock.UserRepoImpl
-	userHandler userHandlerImpl
+	userRepo *mock.UserRepoImpl
+	Expect   *httpexpect.Expect
 }
 
-func (suite *UserHanlerTestSuite) SetupTest() {
-	userRepo := new(mock.UserRepoImpl)
-	suite.userHandler = userHandlerImpl{
-		userRepo: userRepo,
+func TestUserHandlerTestSuite(t *testing.T) {
+	suite.Run(t, new(UserHandlerTestSuite))
+}
+
+func (s *UserHandlerTestSuite) SetupTest() {
+	logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
+
+	app := iris.Default()
+	s.userRepo = new(mock.UserRepoImpl)
+	userHanler := &userHandlerImpl{
+		userRepo: s.userRepo,
+		log:      logger,
 	}
-	suite.userRepo = userRepo
+	initUser(app, userHanler)
+
+	s.Expect = httptest.New(s.T(), app)
 }
 
-func (suite *UserHanlerTestSuite) TearDownTest() {
+func (s *UserHandlerTestSuite) TearDownTest() {
 }
 
-func TestUserRepoTestSuite(t *testing.T) {
-	suite.Run(t, new(UserHanlerTestSuite))
-}
-
-func (suite *UserHanlerTestSuite) TestUserFind() {
-	suite.Run("find with valid data", func() {
-		var id uint = 49
+func (s *UserHandlerTestSuite) TestUser() {
+	s.Run("Test find a user has found", func() {
+		var userID uint = 49
 		out := &model.User{}
-		out.ID = id
-		out.Name = "Phu"
-		suite.userRepo.On("Find", id).Return(out, nil)
-		user, _ := suite.userHandler.get(id)
-		if user.ID != id {
-			suite.Fail("User ID should be same")
-		}
+		out.ID = userID
+		s.userRepo.On("Find", userID).Return(out, nil)
+		url := fmt.Sprintf("/user/%d", userID)
+		expect := s.Expect.GET(url).Expect()
+		expect.Status(httptest.StatusOK)
+		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", userID)
 	})
-	suite.Run("find with invalid data", func() {
-		var id uint = 49
-		suite.userRepo.On("Find", id).Return(nil, errors.New("Not found"))
-		_, err := suite.userHandler.get(id)
-		if err != nil {
-			suite.Fail("This should be error")
-		}
+	s.Run("Test find a user not found", func() {
+		var userID uint = 50
+		out := &model.User{}
+		url := fmt.Sprintf("/user/%d", userID)
+		s.userRepo.On("Find", userID).Return(out, errors.New("Not found"))
+		expect := s.Expect.GET(url).Expect()
+		expect.Status(httptest.StatusNotFound)
 	})
 }

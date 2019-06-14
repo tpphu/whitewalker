@@ -2,51 +2,62 @@ package handler
 
 import (
 	"errors"
+	"fmt"
+	"log"
+	"os"
 	"testing"
 
+	"github.com/iris-contrib/httpexpect"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/httptest"
 	"github.com/stretchr/testify/suite"
 	"github.com/tpphu/whitewalker/mock"
 	"github.com/tpphu/whitewalker/model"
 )
 
-type NoteHanlerTestSuite struct {
+type NoteHandlerTestSuite struct {
 	suite.Suite
-	noteRepo    *mock.NoteRepoImpl
-	noteHandler noteHandlerImpl
+	noteRepo *mock.NoteRepoImpl
+	Expect   *httpexpect.Expect
 }
 
-func (suite *NoteHanlerTestSuite) SetupTest() {
-	noteRepo := new(mock.NoteRepoImpl)
-	suite.noteHandler = noteHandlerImpl{
-		noteRepo: noteRepo,
+func TestNoteHandlerTestSuite(t *testing.T) {
+	suite.Run(t, new(NoteHandlerTestSuite))
+}
+
+func (s *NoteHandlerTestSuite) SetupTest() {
+	logger := log.New(os.Stdout, "" /* prefix */, 0 /* flags */)
+
+	app := iris.Default()
+	s.noteRepo = new(mock.NoteRepoImpl)
+	noteHanler := &noteHandlerImpl{
+		noteRepo: s.noteRepo,
+		log:      logger,
 	}
-	suite.noteRepo = noteRepo
+	initNote(app, noteHanler)
+	s.Expect = httptest.New(s.T(), app)
 }
 
-func (suite *NoteHanlerTestSuite) TearDownTest() {
+func (s *NoteHandlerTestSuite) TearDownTest() {
 }
 
-func TestNoteRepoTestSuite(t *testing.T) {
-	suite.Run(t, new(NoteHanlerTestSuite))
-}
-
-func (suite *NoteHanlerTestSuite) TestNoteCreate() {
-	suite.Run("create with valid data", func() {
-		var id uint = 49
+func (s *NoteHandlerTestSuite) TestNote() {
+	s.Run("Test find a note has found", func() {
+		var noteID uint = 49
 		out := &model.Note{}
-		out.ID = id
-		suite.noteRepo.On("Find", id).Return(out, nil)
-		note, _ := suite.noteHandler.get(id)
-		if note.ID != uint(id) {
-			suite.Fail("Note ID should be same")
-		}
+		out.ID = noteID
+		s.noteRepo.On("Find", noteID).Return(out, nil)
+		url := fmt.Sprintf("/note/%d", noteID)
+		expect := s.Expect.GET(url).Expect()
+		expect.Status(httptest.StatusOK)
+		expect.JSON().Object().ContainsKey("ID").ValueEqual("ID", noteID)
 	})
-	suite.Run("create with invalid data", func() {
-		var id uint = 49
-		suite.noteRepo.On("Find", id).Return(nil, errors.New("Not found"))
-		_, err := suite.noteHandler.get(id)
-		if err != nil {
-			suite.Fail("This should be error")
-		}
+	s.Run("Test find a note not found", func() {
+		var noteID uint = 50
+		out := &model.Note{}
+		s.noteRepo.On("Find", noteID).Return(out, errors.New("Not found"))
+		url := fmt.Sprintf("/note/%d", noteID)
+		expect := s.Expect.GET(url).Expect()
+		expect.Status(httptest.StatusNotFound)
 	})
 }

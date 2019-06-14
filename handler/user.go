@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	"github.com/tpphu/whitewalker/model"
+	"github.com/kataras/iris"
 	"github.com/tpphu/whitewalker/repo"
 )
 
@@ -12,10 +12,12 @@ type userHandlerImpl struct {
 	log      *log.Logger
 }
 
-func (n userHandlerImpl) get(id uint) (*model.User, Error) {
+func (n userHandlerImpl) get(c iris.Context) {
+	id := c.Params().GetUintDefault("id", 0)
 	user, err := n.userRepo.Find(id)
 	if err != nil {
-		return user, NewNotFoundErr(err)
+		simpleReturnHandler(c, user, NewNotFoundErr(err))
+		return
 	}
-	return user, nil
+	simpleReturnHandler(c, user, nil)
 }

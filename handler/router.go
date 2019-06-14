@@ -35,20 +35,12 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 
 func initNote(r *iris.Application, noteHanler *noteHandlerImpl) {
 	group := r.Party("/note")
-	group.Get("/{id:uint}", func(c iris.Context) {
-		id := c.Params().GetUintDefault("id", 0)
-		result, err := noteHanler.get(id)
-		simpleReturnHandler(c, result, err)
-	})
+	group.Get("/{id:uint}", noteHanler.get)
 }
 
 func initUser(r *iris.Application, userHanler *userHandlerImpl) {
 	group := r.Party("/user")
-	group.Get("/{id:uint}", func(c iris.Context) {
-		id := c.Params().GetUintDefault("id", 0)
-		result, err := userHanler.get(id)
-		simpleReturnHandler(c, result, err)
-	})
+	group.Get("/{id:uint}", userHanler.get)
 }
 
 func initDev(r *iris.Application) {
