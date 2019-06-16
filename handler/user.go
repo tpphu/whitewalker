@@ -12,9 +12,14 @@ type userHandlerImpl struct {
 	log      *log.Logger
 }
 
-func (n userHandlerImpl) get(c iris.Context) {
+func (handler userHandlerImpl) inject(app *iris.Application) {
+	group := app.Party("/user")
+	group.Get("/{id:uint}", handler.get)
+}
+
+func (handler userHandlerImpl) get(c iris.Context) {
 	id := c.Params().GetUintDefault("id", 0)
-	user, err := n.userRepo.Find(id)
+	user, err := handler.userRepo.Find(id)
 	if err != nil {
 		simpleReturnHandler(c, user, NewNotFoundErr(err))
 		return

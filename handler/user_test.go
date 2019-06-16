@@ -34,7 +34,7 @@ func (s *UserHandlerTestSuite) SetupTest() {
 		userRepo: s.userRepo,
 		log:      logger,
 	}
-	initUser(app, userHanler)
+	userHanler.inject(app)
 
 	s.Expect = httptest.New(s.T(), app)
 }

@@ -34,7 +34,7 @@ func (s *NoteHandlerTestSuite) SetupTest() {
 		noteRepo: s.noteRepo,
 		log:      logger,
 	}
-	initNote(app, noteHanler)
+	noteHanler.inject(app)
 	s.Expect = httptest.New(s.T(), app)
 }
 

@@ -11,9 +11,9 @@ import (
 
 // BuildEngine returns a *iris.Application
 func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris.Application {
-	r := iris.Default()
-	r.Logger().SetLevel(appContext.GlobalString("loglevel"))
-	initDev(r)
+	app := iris.Default()
+	app.Logger().SetLevel(appContext.GlobalString("loglevel"))
+	initHealthCheck(app)
 	// Note handler
 	noteHanler := &noteHandlerImpl{
 		noteRepo: repo.NoteRepoImpl{
@@ -21,7 +21,7 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 		},
 		log: logger,
 	}
-	initNote(r, noteHanler)
+	noteHanler.inject(app)
 	// User handler
 	userHanler := &userHandlerImpl{
 		userRepo: repo.UserRepoImpl{
@@ -29,21 +29,11 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 		},
 		log: logger,
 	}
-	initUser(r, userHanler)
-	return r
+	userHanler.inject(app)
+	return app
 }
 
-func initNote(r *iris.Application, noteHanler *noteHandlerImpl) {
-	group := r.Party("/note")
-	group.Get("/{id:uint}", noteHanler.get)
-}
-
-func initUser(r *iris.Application, userHanler *userHandlerImpl) {
-	group := r.Party("/user")
-	group.Get("/{id:uint}", userHanler.get)
-}
-
-func initDev(r *iris.Application) {
+func initHealthCheck(r *iris.Application) {
 	r.Get("/ping", func(c iris.Context) {
 		c.JSON(iris.Map{
 			"message": "pong",
