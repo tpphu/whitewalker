@@ -13,9 +13,12 @@ import (
 func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris.Application {
 	app := iris.Default()
 	app.Logger().SetLevel(appContext.GlobalString("loglevel"))
-	initHealthCheck(app)
+	healthcCheckHandler := healthCheckHandlerImpl{
+		log: logger,
+	}
+	healthcCheckHandler.inject(app)
 	// Note handler
-	noteHanler := &noteHandlerImpl{
+	noteHanler := noteHandlerImpl{
 		noteRepo: repo.NoteRepoImpl{
 			DB: db,
 		},
@@ -23,7 +26,7 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 	}
 	noteHanler.inject(app)
 	// User handler
-	userHanler := &userHandlerImpl{
+	userHanler := userHandlerImpl{
 		userRepo: repo.UserRepoImpl{
 			DB: db,
 		},
@@ -31,14 +34,6 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 	}
 	userHanler.inject(app)
 	return app
-}
-
-func initHealthCheck(r *iris.Application) {
-	r.Get("/ping", func(c iris.Context) {
-		c.JSON(iris.Map{
-			"message": "pong",
-		})
-	})
 }
 
 func simpleReturnHandler(c iris.Context, result interface{}, err Error) {
