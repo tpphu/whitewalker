@@ -15,14 +15,12 @@ type Server struct {
 	Port    string
 }
 
-var shutdownServer = func() error { return nil }
-
 // Start server
 func (s Server) Start(appContext *cli.Context) error {
-	s.IrisApp.Run(
+	err := s.IrisApp.Run(
 		iris.Addr(s.Address+":"+s.Port),
 		iris.WithoutInterruptHandler)
-	return nil
+	return err
 }
 
 // Stop server
