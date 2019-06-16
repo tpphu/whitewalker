@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// Error is a custom interface to handle error
 type Error interface {
 	error
 	Status() int
@@ -15,16 +16,17 @@ type StatusError struct {
 	Err  error
 }
 
-// Allows StatusError to satisfy the error interface.
+// Error returns the origin error message
 func (se StatusError) Error() string {
 	return se.Err.Error()
 }
 
-// Returns our HTTP status code.
+// Status method return error code
 func (se StatusError) Status() int {
 	return se.Code
 }
 
+// NewNotFoundErr presents for 404 error
 func NewNotFoundErr(err error) Error {
 	return StatusError{
 		Code: http.StatusNotFound,

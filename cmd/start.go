@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 
@@ -15,9 +16,9 @@ import (
 
 // handleHTTPServer handles http server
 func handleHTTPServer(lc fx.Lifecycle, appContext *cli.Context, logger *log.Logger, db *gorm.DB) {
-	app := handler.BuildEngine(appContext, logger, db)
+	irisApp := handler.BuildEngine(appContext, logger, db)
 	s := server.Server{
-		Engine:  app,
+		IrisApp: irisApp,
 		Address: appContext.String("address"),
 		Port:    appContext.String("port"),
 	}
@@ -46,9 +47,9 @@ func startAction(appContext *cli.Context) {
 			newLogger,
 			newDB,
 		),
+		fx.StopTimeout(time.Second*30),
 		fx.Invoke(handleHTTPServer),
 	)
-
 	app.Run()
 }
 
