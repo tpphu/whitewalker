@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
 	"github.com/tpphu/whitewalker/repo"
+	"github.com/tpphu/whitewalker/service"
 	"github.com/urfave/cli"
 )
 
@@ -33,6 +34,12 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 		log: logger,
 	}
 	userHanler.inject(app)
+	// HTTP ReqResIn service
+	reqResInHanler := reqResInHandlerImpl{
+		reqResService: service.NewReqResIn("https://reqres.in"),
+		log:           logger,
+	}
+	reqResInHanler.inject(app)
 	return app
 }
 

@@ -28,6 +28,7 @@ require (
 	github.com/gorilla/mux v1.7.2 // indirect
 	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428
 	github.com/imkira/go-interpol v1.1.0 // indirect
+	github.com/imroc/req v0.2.3
 	github.com/iris-contrib/blackfriday v2.0.0+incompatible // indirect
 	github.com/iris-contrib/formBinder v0.0.0-20190104093907-fbd5963f41e1 // indirect
 	github.com/iris-contrib/go.uuid v2.0.0+incompatible // indirect
