@@ -1,5 +1,5 @@
 {
-    "go.useLanguageServer": false,
-    "go.autocompleteUnimportedPackages": true,
-    "go.formatTool": "goimports",
+    "go.testEnvVars": {
+        "GO111MODULE": "on"
+    }
 }
