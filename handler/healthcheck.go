@@ -16,6 +16,6 @@ func (handler healthCheckHandlerImpl) inject(app *iris.Application) {
 
 func (handler healthCheckHandlerImpl) ping(c iris.Context) {
 	c.JSON(iris.Map{
-		"message": "pong 11",
+		"message": "pong 12",
 	})
 }
