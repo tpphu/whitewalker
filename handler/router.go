@@ -16,6 +16,7 @@ func BuildEngine(appContext *cli.Context, logger *log.Logger, db *gorm.DB) *iris
 	app.Logger().SetLevel(appContext.GlobalString("loglevel"))
 	healthCheckHandler := healthCheckHandlerImpl{
 		log: logger,
+		db:  db,
 	}
 	healthCheckHandler.inject(app)
 	// Note handler
