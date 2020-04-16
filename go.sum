@@ -297,6 +297,8 @@ go.elastic.co/apm v1.7.2 h1:0nwzVIPp4PDBXSYYtN19+1W5V+sj+C25UjqxDVoKcA8=
 go.elastic.co/apm v1.7.2/go.mod h1:tCw6CkOJgkWnzEthFN9HUP1uL3Gjc/Ur6m7gRPLaoH0=
 go.elastic.co/apm/module/apmgorm v1.7.2 h1:iFFU6LMr7kynOYk/OlIn4i91FNiswuuSoS1DuAB6iAU=
 go.elastic.co/apm/module/apmgorm v1.7.2/go.mod h1:tF2FKVHnY+Qoo+OvmeZW1t6b+j8JIQbcl96MfpMQpGY=
+go.elastic.co/apm/module/apmhttp v1.7.2 h1:2mRh7SwBuEVLmJlX+hsMdcSg9xaielCLElaPn/+i34w=
+go.elastic.co/apm/module/apmhttp v1.7.2/go.mod h1:sTFWiWejnhSdZv6+dMgxGec2Nxe/ZKfHfz/xtRM+cRY=
 go.elastic.co/apm/module/apmsql v1.7.2 h1:gKtSmY03scRoOkcfPLFLp6H7UC3Fu5vg+wz5SebQ1R0=
 go.elastic.co/apm/module/apmsql v1.7.2/go.mod h1:T4Kdfo+urreLSeGHWq9t+kVnEOVDGKmiw6NTke/7C8w=
 go.elastic.co/fastjson v1.0.0 h1:ooXV/ABvf+tBul26jcVViPT3sBir0PvXgibYB1IQQzg=
@@ -361,6 +363,8 @@ golang.org/x/net v0.0.0-20190607172144-d5cec3884524 h1:A4fHjHFi2zGH4/ziDBluIhhGz
 golang.org/x/net v0.0.0-20190607172144-d5cec3884524/go.mod h1:HSz+uSET+XFnRR8LxR5pz3Of3rY3CfYBVs4xY44aLks=
 golang.org/x/net v0.0.0-20190620200207-3b0461eec859 h1:R/3boaszxrf1GEUWTVDzSKVwLmSJpwZ1yqXm8j0v2QI=
 golang.org/x/net v0.0.0-20190620200207-3b0461eec859/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
+golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 h1:Ao/3l156eZf2AW5wK8a7/smtodRU+gha3+BeqJ69lRk=
+golang.org/x/net v0.0.0-20190724013045-ca1201d0de80/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=
 golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=

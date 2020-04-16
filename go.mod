@@ -69,7 +69,9 @@ require (
 	github.com/yudai/gojsondiff v1.0.0 // indirect
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
+	go.elastic.co/apm v1.7.2
 	go.elastic.co/apm/module/apmgorm v1.7.2
+	go.elastic.co/apm/module/apmhttp v1.7.2
 	go.opencensus.io v0.22.0 // indirect
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/dig v1.7.0 // indirect
