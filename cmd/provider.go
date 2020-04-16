@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/urfave/cli"
+	"go.elastic.co/apm/module/apmgorm"
 )
 
 // https://github.com/uber-go/fx/blob/master/example_test.go
@@ -18,7 +19,7 @@ func newLogger() *log.Logger {
 }
 
 func newDB(appContext *cli.Context) *gorm.DB {
-	db, err := gorm.Open("mysql", appContext.GlobalString("database"))
+	db, err := apmgorm.Open("mysql", appContext.GlobalString("database"))
 	if err != nil {
 		panic(err)
 	}
