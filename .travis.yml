@@ -1,0 +1,10 @@
+language: go
+go: 
+  - 1.12.3
+env:
+  - GO111MODULE=on
+before_script:
+  - cp .env.example .env
+install: true
+script: 
+  - go test -v ./...
