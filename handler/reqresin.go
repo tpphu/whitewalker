@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/imroc/req"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"github.com/tpphu/whitewalker/service"
 )
 

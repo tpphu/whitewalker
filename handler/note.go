@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"github.com/tpphu/whitewalker/repo"
 )
 

@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/iris-contrib/httpexpect"
+	"github.com/gavv/httpexpect"
 	"github.com/jinzhu/gorm"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/httptest"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/httptest"
 	"github.com/stretchr/testify/suite"
 )
 

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 type healthCheckHandlerImpl struct {

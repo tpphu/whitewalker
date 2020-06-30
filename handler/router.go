@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"github.com/tpphu/whitewalker/repo"
 	"github.com/tpphu/whitewalker/service"
 	"github.com/urfave/cli"

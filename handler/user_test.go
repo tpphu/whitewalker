@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/iris-contrib/httpexpect"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/httptest"
+	"github.com/gavv/httpexpect"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/httptest"
 	"github.com/stretchr/testify/suite"
 	"github.com/tpphu/whitewalker/mock"
 	"github.com/tpphu/whitewalker/model"
