@@ -1,7 +1,7 @@
 # whitewalker
 A API service boilerplate
 
-Build status: ![Build status](https://travis-ci.com/tpphu/whitewalker.svg?branch=master)
+Build status: ![Go](https://github.com/tpphu/whitewalker/workflows/Go/badge.svg)
 
 ## Todo
 
