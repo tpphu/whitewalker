@@ -25,6 +25,6 @@ func (h healthCheckHandlerImpl) ping(c iris.Context) {
 	c.JSON(iris.Map{
 		"sucess":   true,
 		"database": result.Ping == "1",
-		"message":  "pong 4",
+		"message":  "pong 5",
 	})
 }
