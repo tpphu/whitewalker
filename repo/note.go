@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"context"
 	"github.com/jinzhu/gorm"
 	"github.com/tpphu/whitewalker/helper"
 	"github.com/tpphu/whitewalker/model"
@@ -8,7 +9,7 @@ import (
 
 // NoteRepo interface
 type NoteRepo interface {
-	Find(uint) (*model.Note, error)
+	Find(context.Context, uint) (*model.Note, error)
 	List(helper.Pagination) ([]model.Note, error)
 	Update(uint, model.Note) error
 	Delete(uint) error
